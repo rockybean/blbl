@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blbl_modern_background">#101318</color>
+    <color name="blbl_modern_surface">#1C2028</color>
+    <color name="blbl_modern_text">#F1F3F8</color>
+    <color name="blbl_modern_text_secondary">#B8C0CF</color>
+    <color name="blbl_modern_accent">#BDC9FF</color>
+    <color name="blbl_modern_accent_container">#354368</color>
+    <color name="blbl_modern_accent_weak">#24304B</color>
+    <color name="blbl_modern_accent_pressed">#50608B</color>
+</resources>

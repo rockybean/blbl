@@ -1030,6 +1030,7 @@ class AppPrefs(context: Context) {
         const val UI_SCALE_FACTOR_DEFAULT = 1.00f
 
         const val THEME_PRESET_DEFAULT = "default"
+        const val THEME_PRESET_MODERN = "modern"
         const val THEME_PRESET_TV_PINK = "tv_pink"
         const val THEME_PRESET_TV_PINK_ILLUSTRATION = "tv_pink_illustration"
 
@@ -1389,6 +1390,7 @@ class AppPrefs(context: Context) {
 
         fun normalizeThemePreset(value: String?): String {
             return when (value?.trim()) {
+                THEME_PRESET_MODERN -> THEME_PRESET_MODERN
                 THEME_PRESET_TV_PINK -> THEME_PRESET_TV_PINK
                 THEME_PRESET_TV_PINK_ILLUSTRATION -> THEME_PRESET_TV_PINK_ILLUSTRATION
                 else -> THEME_PRESET_DEFAULT

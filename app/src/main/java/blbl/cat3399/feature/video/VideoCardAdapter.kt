@@ -126,6 +126,19 @@ class VideoCardAdapter(
 
     override fun getItemCount(): Int = items.size
 
+    override fun onBindViewHolder(holder: Vh, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty() && payloads.all { it === PAYLOAD_ACTION_SELECTION }) {
+            val item = items[position]
+            val overlay = currentOverlayUi(item, position)
+            if (overlay != null) {
+                // D-pad movement only changes the action state; preserve the cover and text bindings.
+                holder.bindActionOverlay(item, overlay, actionDelegate)
+                return
+            }
+        }
+        onBindViewHolder(holder, position)
+    }
+
     private fun stableKeyFor(item: VideoCard): String = stableIdKey?.invoke(item) ?: item.stableKey()
 
     private fun isOverlayExpanded(item: VideoCard): Boolean = expandedCardStableKey == stableKeyFor(item)
@@ -216,7 +229,8 @@ class VideoCardAdapter(
         val targetIndex = index.coerceIn(0, ACTION_BUTTON_COUNT - 1)
         if (selectedActionIndex == targetIndex) return
         selectedActionIndex = targetIndex
-        notifyExpandedKeyChanged(expandedKey)
+        val position = items.indexOfFirst { stableKeyFor(it) == expandedKey }
+        if (position >= 0) notifyItemChanged(position, PAYLOAD_ACTION_SELECTION)
     }
 
     private fun openOverlay(
@@ -266,6 +280,7 @@ class VideoCardAdapter(
     }
 
     companion object {
+        private val PAYLOAD_ACTION_SELECTION = Any()
         private const val NO_ACTION_SELECTED = -1
         private const val ACTION_BUTTON_COUNT = 4
     }
@@ -454,7 +469,7 @@ class VideoCardAdapter(
             }
         }
 
-        private fun bindActionOverlay(
+        fun bindActionOverlay(
             item: VideoCard,
             overlayUi: ActionOverlayUi?,
             actionDelegate: VideoCardActionDelegate?,

@@ -677,6 +677,7 @@ class SettingsInteractionHandler(
                 val options =
                     listOf(
                         blbl.cat3399.core.prefs.AppPrefs.THEME_PRESET_DEFAULT to "默认",
+                        blbl.cat3399.core.prefs.AppPrefs.THEME_PRESET_MODERN to "现代",
                         blbl.cat3399.core.prefs.AppPrefs.THEME_PRESET_TV_PINK to "小电视粉",
                         blbl.cat3399.core.prefs.AppPrefs.THEME_PRESET_TV_PINK_ILLUSTRATION to "经典",
                     )

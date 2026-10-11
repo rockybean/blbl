@@ -6,6 +6,18 @@ import org.junit.Test
 
 class AppPrefsTest {
     @Test
+    fun normalizeThemePreset_preserves_supported_presets_and_defaults_unknown_values() {
+        listOf(
+            AppPrefs.THEME_PRESET_DEFAULT,
+            AppPrefs.THEME_PRESET_MODERN,
+            AppPrefs.THEME_PRESET_TV_PINK,
+            AppPrefs.THEME_PRESET_TV_PINK_ILLUSTRATION,
+        ).forEach { assertEquals(it, AppPrefs.normalizeThemePreset(" $it ")) }
+        assertEquals(AppPrefs.THEME_PRESET_DEFAULT, AppPrefs.normalizeThemePreset(null))
+        assertEquals(AppPrefs.THEME_PRESET_DEFAULT, AppPrefs.normalizeThemePreset("unknown"))
+    }
+
+    @Test
     fun normalizePlayerAutoSkipServerBaseUrl_should_trim_and_remove_trailing_slash() {
         val normalized = AppPrefs.normalizePlayerAutoSkipServerBaseUrl("  https://bsbsb.top/  ")
 

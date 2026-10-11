@@ -34,6 +34,8 @@ object ThemePresets {
             )
 
         return when (preset) {
+            AppPrefs.THEME_PRESET_MODERN -> Spec(baseThemeRes = R.style.Theme_Blbl_Base_Modern)
+
             AppPrefs.THEME_PRESET_TV_PINK ->
                 Spec(
                     baseThemeRes = R.style.Theme_Blbl_Base_PinkLight,
