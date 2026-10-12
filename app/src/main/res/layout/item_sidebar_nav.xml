@@ -8,12 +8,12 @@
     android:layout_marginHorizontal="@dimen/sidebar_nav_card_margin_h"
     android:clickable="true"
     android:focusable="true"
-    android:stateListAnimator="@animator/blbl_focus_scale"
+    android:stateListAnimator="?attr/blblFocusAnimator"
     app:cardBackgroundColor="@android:color/transparent"
-    app:cardCornerRadius="10dp"
+    app:cardCornerRadius="?attr/blblNavCornerRadius"
     app:cardElevation="0dp"
     app:strokeColor="?attr/blblFocusStrokeFocusOnlyColor"
-    app:strokeWidth="2dp">
+    app:strokeWidth="?attr/blblFocusStrokeWidth">
 
     <LinearLayout
         android:id="@+id/container"
@@ -25,9 +25,10 @@
 
         <ImageView
             android:id="@+id/iv_icon"
-            android:layout_width="@dimen/sidebar_nav_icon_size"
-            android:layout_height="@dimen/sidebar_nav_icon_size"
-            android:contentDescription="@string/app_name" />
+            android:layout_width="?attr/blblNavIconSize"
+            android:layout_height="?attr/blblNavIconSize"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no" />
 
         <TextView
             android:id="@+id/tv_label"
@@ -35,9 +36,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/sidebar_nav_label_margin_top"
             android:ellipsize="end"
+            android:importantForAccessibility="no"
             android:maxLines="1"
             android:textColor="?attr/blblOnPageBackdrop"
-            android:textSize="@dimen/sidebar_nav_label_text_size"
+            android:textSize="?attr/blblNavLabelTextSize"
             android:visibility="gone" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

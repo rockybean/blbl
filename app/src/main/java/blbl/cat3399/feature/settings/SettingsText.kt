@@ -176,6 +176,7 @@ object SettingsText {
 
     fun themePresetText(prefValue: String): String =
         when (prefValue) {
+            blbl.cat3399.core.prefs.AppPrefs.THEME_PRESET_MODERN -> "现代"
             blbl.cat3399.core.prefs.AppPrefs.THEME_PRESET_TV_PINK -> "小电视粉"
             blbl.cat3399.core.prefs.AppPrefs.THEME_PRESET_TV_PINK_ILLUSTRATION -> "经典"
             else -> "默认"

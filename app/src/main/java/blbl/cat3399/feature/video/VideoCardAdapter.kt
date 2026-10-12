@@ -109,6 +109,7 @@ class VideoCardAdapter(
             onOverlayActionClick = ::handleOverlayActionClick,
             onItemFocusLost = ::handleItemFocusLost,
             onOverlayActionSelect = ::updateSelectedActionIndex,
+            selectedOverlayActionIndex = { selectedActionIndex },
             isOverlayExpanded = ::isOverlayExpanded,
         )
     }
@@ -125,6 +126,19 @@ class VideoCardAdapter(
     }
 
     override fun getItemCount(): Int = items.size
+
+    override fun onBindViewHolder(holder: Vh, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty() && payloads.all { it === PAYLOAD_ACTION_SELECTION }) {
+            val item = items[position]
+            val overlay = currentOverlayUi(item, position)
+            if (overlay != null) {
+                // D-pad movement only changes the action state; preserve the cover and text bindings.
+                holder.bindActionOverlay(item, overlay, actionDelegate)
+                return
+            }
+        }
+        onBindViewHolder(holder, position)
+    }
 
     private fun stableKeyFor(item: VideoCard): String = stableIdKey?.invoke(item) ?: item.stableKey()
 
@@ -216,7 +230,8 @@ class VideoCardAdapter(
         val targetIndex = index.coerceIn(0, ACTION_BUTTON_COUNT - 1)
         if (selectedActionIndex == targetIndex) return
         selectedActionIndex = targetIndex
-        notifyExpandedKeyChanged(expandedKey)
+        val position = items.indexOfFirst { stableKeyFor(it) == expandedKey }
+        if (position >= 0) notifyItemChanged(position, PAYLOAD_ACTION_SELECTION)
     }
 
     private fun openOverlay(
@@ -266,6 +281,7 @@ class VideoCardAdapter(
     }
 
     companion object {
+        private val PAYLOAD_ACTION_SELECTION = Any()
         private const val NO_ACTION_SELECTED = -1
         private const val ACTION_BUTTON_COUNT = 4
     }
@@ -279,6 +295,7 @@ class VideoCardAdapter(
         private val onOverlayActionClick: (VideoCard, Int, Int) -> Unit,
         private val onItemFocusLost: (VideoCard) -> Unit,
         private val onOverlayActionSelect: (Int) -> Unit,
+        private val selectedOverlayActionIndex: () -> Int,
         private val isOverlayExpanded: (VideoCard) -> Boolean,
     ) : RecyclerView.ViewHolder(binding.root) {
         private var pointerDownForLongClick: Boolean = false
@@ -454,7 +471,7 @@ class VideoCardAdapter(
             }
         }
 
-        private fun bindActionOverlay(
+        fun bindActionOverlay(
             item: VideoCard,
             overlayUi: ActionOverlayUi?,
             actionDelegate: VideoCardActionDelegate?,
@@ -512,6 +529,8 @@ class VideoCardAdapter(
                 } else {
                     DpadItemKeyHandler { _, keyCode, event ->
                         if (!isOverlayExpanded(item)) return@DpadItemKeyHandler false
+                        // Remote repeats can arrive before RecyclerView applies the previous payload.
+                        val selectedIndex = selectedOverlayActionIndex()
                         when (keyCode) {
                             KeyEvent.KEYCODE_BACK,
                             KeyEvent.KEYCODE_ESCAPE,
@@ -526,8 +545,8 @@ class VideoCardAdapter(
 
                             KeyEvent.KEYCODE_DPAD_LEFT ->
                                 if (event.action == KeyEvent.ACTION_DOWN) {
-                                    if (overlayUi.selectedIndex > 0) {
-                                        onOverlayActionSelect(overlayUi.selectedIndex - 1)
+                                    if (selectedIndex > 0) {
+                                        onOverlayActionSelect(selectedIndex - 1)
                                         true
                                     } else {
                                         onItemFocusLost(item)
@@ -539,8 +558,8 @@ class VideoCardAdapter(
 
                             KeyEvent.KEYCODE_DPAD_RIGHT ->
                                 if (event.action == KeyEvent.ACTION_DOWN) {
-                                    if (overlayUi.selectedIndex < overlayUi.actions.lastIndex) {
-                                        onOverlayActionSelect(overlayUi.selectedIndex + 1)
+                                    if (selectedIndex < overlayUi.actions.lastIndex) {
+                                        onOverlayActionSelect(selectedIndex + 1)
                                         true
                                     } else {
                                         onItemFocusLost(item)

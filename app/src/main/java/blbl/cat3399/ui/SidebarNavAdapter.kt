@@ -2,6 +2,7 @@ package blbl.cat3399.ui
 
 import android.content.res.ColorStateList
 import android.os.SystemClock
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,15 @@ class SidebarNavAdapter(
     private var selectedId: Int = ID_HOME
     private var showLabelsAlways: Boolean = false
 
+    init {
+        setHasStableIds(true)
+    }
+
     fun submit(list: List<NavItem>, selectedId: Int) {
+        if (items == list) {
+            select(selectedId, trigger = false)
+            return
+        }
         items.clear()
         items.addAll(list)
         this.selectedId = selectedId
@@ -34,7 +43,7 @@ class SidebarNavAdapter(
     fun setShowLabelsAlways(enabled: Boolean) {
         if (showLabelsAlways == enabled) return
         showLabelsAlways = enabled
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0, itemCount, PAYLOAD_APPEARANCE)
     }
 
     fun select(id: Int, trigger: Boolean) {
@@ -51,8 +60,8 @@ class SidebarNavAdapter(
 
         val prevPos = items.indexOfFirst { it.id == prevId }
         val newPos = items.indexOfFirst { it.id == id }
-        if (prevPos >= 0) notifyItemChanged(prevPos)
-        if (newPos >= 0) notifyItemChanged(newPos)
+        if (prevPos >= 0) notifyItemChanged(prevPos, PAYLOAD_APPEARANCE)
+        if (newPos >= 0) notifyItemChanged(newPos, PAYLOAD_APPEARANCE)
 
         if (trigger) items.firstOrNull { it.id == id }?.let { onClick(it) }
     }
@@ -86,7 +95,29 @@ class SidebarNavAdapter(
 
     override fun getItemCount(): Int = items.size
 
+    override fun getItemId(position: Int): Long = items[position].id.toLong()
+
+    override fun onBindViewHolder(holder: Vh, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty() && payloads.all { it === PAYLOAD_APPEARANCE }) {
+            holder.bindAppearance(items[position].id == selectedId, showLabelsAlways)
+        } else {
+            onBindViewHolder(holder, position)
+        }
+    }
+
     class Vh(private val binding: ItemSidebarNavBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val modernNavigation = TypedValue().let {
+            binding.root.context.theme.resolveAttribute(R.attr.blblModernNavigation, it, true) && it.data != 0
+        }
+        private val modernItemHeight =
+            binding.root.context.obtainStyledAttributes(intArrayOf(R.attr.blblModernNavItemHeight)).let { typed ->
+                try {
+                    typed.getDimensionPixelSize(0, binding.root.resources.getDimensionPixelSize(R.dimen.sidebar_nav_item_height_labeled))
+                } finally {
+                    typed.recycle()
+                }
+            }
+
         fun bind(
             item: NavItem,
             selected: Boolean,
@@ -95,7 +126,13 @@ class SidebarNavAdapter(
         ) {
             binding.ivIcon.setImageResource(item.iconRes)
             binding.tvLabel.text = item.title
-            binding.tvLabel.visibility = if (showLabelsAlways || selected) View.VISIBLE else View.GONE
+            binding.root.contentDescription = item.title
+            binding.root.setOnClickListener { onClick() }
+            bindAppearance(selected, showLabelsAlways)
+        }
+
+        fun bindAppearance(selected: Boolean, showLabelsAlways: Boolean) {
+            binding.tvLabel.visibility = if (modernNavigation || showLabelsAlways || selected) View.VISIBLE else View.GONE
             val ctx = binding.root.context
             binding.card.setCardBackgroundColor(
                 if (selected) ThemeColor.resolve(ctx, R.attr.blblAccentContainer, R.color.blbl_surface) else 0x00000000,
@@ -115,17 +152,22 @@ class SidebarNavAdapter(
                     selected -> R.dimen.sidebar_nav_item_height_selected
                     else -> R.dimen.sidebar_nav_item_height_default
                 }
-            val heightPx = binding.root.resources.getDimensionPixelSize(heightRes).coerceAtLeast(1)
+            val heightPx =
+                if (modernNavigation) {
+                    modernItemHeight
+                } else {
+                    binding.root.resources.getDimensionPixelSize(heightRes)
+                }.coerceAtLeast(1)
             val lp = binding.card.layoutParams
             if (lp.height != heightPx) {
                 lp.height = heightPx
                 binding.card.layoutParams = lp
             }
-            binding.root.setOnClickListener { onClick() }
         }
     }
 
     companion object {
+        private val PAYLOAD_APPEARANCE = Any()
         const val ID_SEARCH = 0
         const val ID_HOME = 1
         const val ID_CATEGORY = 2

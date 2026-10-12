@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import blbl.cat3399.R
 import blbl.cat3399.core.net.BiliClient
 import blbl.cat3399.core.prefs.AppPrefs
+import blbl.cat3399.core.tv.isTvDevice
 import blbl.cat3399.feature.live.LivePlayerActivity
 import blbl.cat3399.feature.player.PlayerActivity
 
@@ -34,6 +35,13 @@ object ThemePresets {
             )
 
         return when (preset) {
+            AppPrefs.THEME_PRESET_MODERN ->
+                Spec(
+                    baseThemeRes =
+                        if (context.isTvDevice()) R.style.Theme_Blbl_Base_Modern_Tv
+                        else R.style.Theme_Blbl_Base_Modern,
+                )
+
             AppPrefs.THEME_PRESET_TV_PINK ->
                 Spec(
                     baseThemeRes = R.style.Theme_Blbl_Base_PinkLight,

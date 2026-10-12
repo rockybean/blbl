@@ -8,6 +8,21 @@
     <attr name="playerOsdGap" format="dimension" />
 
     <!-- Theme preset support (non-player scope). -->
+    <attr name="blblModernNavigation" format="boolean" />
+    <attr name="blblSidebarWidth" format="dimension" />
+    <attr name="blblNavIconSize" format="dimension" />
+    <attr name="blblNavLabelTextSize" format="dimension" />
+    <attr name="blblModernNavItemHeight" format="dimension" />
+    <attr name="blblCardTitleTextSize" format="dimension" />
+    <attr name="blblCardSubtitleTextSize" format="dimension" />
+    <attr name="blblCardMetaTextSize" format="dimension" />
+    <attr name="blblFocusStrokeWidth" format="dimension" />
+    <attr name="blblSidebarBackground" format="color" />
+    <attr name="blblSidebarSettingsSize" format="dimension" />
+    <attr name="blblCardBackground" format="color" />
+    <attr name="blblCardCornerRadius" format="dimension" />
+    <attr name="blblNavCornerRadius" format="dimension" />
+    <attr name="blblFocusAnimator" format="reference" />
     <!-- Some layouts rely on Material's `?attr/colorBackground`. Define it locally for safety. -->
     <attr name="colorBackground" format="color" />
     <attr name="blblPageBackdrop" format="reference|color" />

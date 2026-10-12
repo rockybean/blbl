@@ -6,12 +6,12 @@
     android:layout_margin="@dimen/video_card_margin"
     android:clickable="true"
     android:focusable="true"
-    android:stateListAnimator="@animator/blbl_focus_scale"
-    app:cardBackgroundColor="@android:color/transparent"
-    app:cardCornerRadius="10dp"
+    android:stateListAnimator="?attr/blblFocusAnimator"
+    app:cardBackgroundColor="?attr/blblCardBackground"
+    app:cardCornerRadius="?attr/blblCardCornerRadius"
     app:cardElevation="0dp"
     app:strokeColor="?attr/blblFocusStrokeColor"
-    app:strokeWidth="2dp"
+    app:strokeWidth="?attr/blblFocusStrokeWidth"
     app:cardUseCompatPadding="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -206,7 +206,7 @@
                 android:shadowDy="1"
                 android:shadowRadius="2"
                 android:textColor="@color/blbl_text_on_media"
-                android:textSize="@dimen/video_card_stat_text_size"
+                android:textSize="?attr/blblCardMetaTextSize"
                 android:textStyle="bold"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -223,7 +223,7 @@
                 android:paddingVertical="@dimen/video_card_duration_padding_v"
                 android:text="@string/badge_charging"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/video_card_duration_text_size"
+                android:textSize="?attr/blblCardMetaTextSize"
                 android:textStyle="bold"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -241,7 +241,7 @@
                 android:shadowDy="1"
                 android:shadowRadius="2"
                 android:textColor="@color/blbl_text_on_media"
-                android:textSize="@dimen/video_card_duration_text_size"
+                android:textSize="?attr/blblCardMetaTextSize"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -257,7 +257,7 @@
                 android:shadowDy="1"
                 android:shadowRadius="2"
                 android:textColor="@color/blbl_text_on_media"
-                android:textSize="@dimen/video_card_duration_text_size"
+                android:textSize="?attr/blblCardMetaTextSize"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -291,7 +291,7 @@
                     android:shadowDy="1"
                     android:shadowRadius="2"
                     android:textColor="@color/blbl_text_on_media"
-                    android:textSize="@dimen/video_card_stat_text_size" />
+                    android:textSize="?attr/blblCardMetaTextSize" />
 
                 <ImageView
                     android:id="@+id/iv_stat_danmaku"
@@ -312,7 +312,7 @@
                     android:shadowDy="1"
                     android:shadowRadius="2"
                     android:textColor="@color/blbl_text_on_media"
-                    android:textSize="@dimen/video_card_stat_text_size" />
+                    android:textSize="?attr/blblCardMetaTextSize" />
 
             </LinearLayout>
 
@@ -327,7 +327,7 @@
             android:lines="2"
             android:maxLines="2"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="@dimen/video_card_title_text_size"
+            android:textSize="?attr/blblCardTitleTextSize"
             app:layout_constraintBottom_toTopOf="@id/ll_subtitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_default="wrap"
@@ -354,7 +354,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="?android:attr/textColorSecondary"
-                android:textSize="@dimen/video_card_subtitle_text_size" />
+                android:textSize="?attr/blblCardSubtitleTextSize" />
 
             <TextView
                 android:id="@+id/tv_pubdate"
@@ -364,7 +364,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="?android:attr/textColorSecondary"
-                android:textSize="@dimen/video_card_subtitle_text_size" />
+                android:textSize="?attr/blblCardSubtitleTextSize" />
 
         </LinearLayout>
 
