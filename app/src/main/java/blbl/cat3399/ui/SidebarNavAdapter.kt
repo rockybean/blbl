@@ -109,6 +109,14 @@ class SidebarNavAdapter(
         private val modernNavigation = TypedValue().let {
             binding.root.context.theme.resolveAttribute(R.attr.blblModernNavigation, it, true) && it.data != 0
         }
+        private val modernItemHeight =
+            binding.root.context.obtainStyledAttributes(intArrayOf(R.attr.blblModernNavItemHeight)).let { typed ->
+                try {
+                    typed.getDimensionPixelSize(0, binding.root.resources.getDimensionPixelSize(R.dimen.sidebar_nav_item_height_labeled))
+                } finally {
+                    typed.recycle()
+                }
+            }
 
         fun bind(
             item: NavItem,
@@ -140,12 +148,16 @@ class SidebarNavAdapter(
 
             val heightRes =
                 when {
-                    modernNavigation -> R.dimen.sidebar_nav_item_height_labeled
                     showLabelsAlways -> R.dimen.sidebar_nav_item_height_labeled
                     selected -> R.dimen.sidebar_nav_item_height_selected
                     else -> R.dimen.sidebar_nav_item_height_default
                 }
-            val heightPx = binding.root.resources.getDimensionPixelSize(heightRes).coerceAtLeast(1)
+            val heightPx =
+                if (modernNavigation) {
+                    modernItemHeight
+                } else {
+                    binding.root.resources.getDimensionPixelSize(heightRes)
+                }.coerceAtLeast(1)
             val lp = binding.card.layoutParams
             if (lp.height != heightPx) {
                 lp.height = heightPx

@@ -10,6 +10,14 @@
 
     <style name="Theme.Blbl.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="blblModernNavigation">false</item>
+        <item name="blblSidebarWidth">@dimen/sidebar_width</item>
+        <item name="blblNavIconSize">@dimen/sidebar_nav_icon_size</item>
+        <item name="blblNavLabelTextSize">@dimen/sidebar_nav_label_text_size</item>
+        <item name="blblModernNavItemHeight">@dimen/sidebar_nav_item_height_labeled</item>
+        <item name="blblCardTitleTextSize">@dimen/video_card_title_text_size</item>
+        <item name="blblCardSubtitleTextSize">@dimen/video_card_subtitle_text_size</item>
+        <item name="blblCardMetaTextSize">@dimen/video_card_stat_text_size</item>
+        <item name="blblFocusStrokeWidth">2dp</item>
         <item name="blblSidebarBackground">@android:color/transparent</item>
         <item name="blblSidebarSettingsSize">@dimen/sidebar_main_settings_size</item>
         <item name="blblCardBackground">@android:color/transparent</item>
@@ -96,6 +104,18 @@
         <item name="blblFocusListSelectorRound">@drawable/blbl_modern_focus_bg_round</item>
         <item name="blblFocusStrokeColor">@color/blbl_modern_focus_stroke</item>
         <item name="blblFocusStrokeFocusOnlyColor">@color/blbl_modern_focus_stroke_only</item>
+    </style>
+
+    <style name="Theme.Blbl.Base.Modern.Tv" parent="Theme.Blbl.Base.Modern">
+        <item name="blblSidebarWidth">88dp</item>
+        <item name="blblNavIconSize">36dp</item>
+        <item name="blblNavLabelTextSize">16sp</item>
+        <item name="blblModernNavItemHeight">76dp</item>
+        <item name="blblCardTitleTextSize">20sp</item>
+        <item name="blblCardSubtitleTextSize">16sp</item>
+        <item name="blblCardMetaTextSize">16sp</item>
+        <item name="blblFocusStrokeWidth">3dp</item>
+        <item name="blblFocusAnimator">@animator/blbl_modern_tv_focus_scale</item>
     </style>
 
     <style name="Theme.Blbl.Base.PinkLight" parent="Theme.Blbl.Base">

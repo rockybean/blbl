@@ -109,6 +109,7 @@ class VideoCardAdapter(
             onOverlayActionClick = ::handleOverlayActionClick,
             onItemFocusLost = ::handleItemFocusLost,
             onOverlayActionSelect = ::updateSelectedActionIndex,
+            selectedOverlayActionIndex = { selectedActionIndex },
             isOverlayExpanded = ::isOverlayExpanded,
         )
     }
@@ -294,6 +295,7 @@ class VideoCardAdapter(
         private val onOverlayActionClick: (VideoCard, Int, Int) -> Unit,
         private val onItemFocusLost: (VideoCard) -> Unit,
         private val onOverlayActionSelect: (Int) -> Unit,
+        private val selectedOverlayActionIndex: () -> Int,
         private val isOverlayExpanded: (VideoCard) -> Boolean,
     ) : RecyclerView.ViewHolder(binding.root) {
         private var pointerDownForLongClick: Boolean = false
@@ -527,6 +529,8 @@ class VideoCardAdapter(
                 } else {
                     DpadItemKeyHandler { _, keyCode, event ->
                         if (!isOverlayExpanded(item)) return@DpadItemKeyHandler false
+                        // Remote repeats can arrive before RecyclerView applies the previous payload.
+                        val selectedIndex = selectedOverlayActionIndex()
                         when (keyCode) {
                             KeyEvent.KEYCODE_BACK,
                             KeyEvent.KEYCODE_ESCAPE,
@@ -541,8 +545,8 @@ class VideoCardAdapter(
 
                             KeyEvent.KEYCODE_DPAD_LEFT ->
                                 if (event.action == KeyEvent.ACTION_DOWN) {
-                                    if (overlayUi.selectedIndex > 0) {
-                                        onOverlayActionSelect(overlayUi.selectedIndex - 1)
+                                    if (selectedIndex > 0) {
+                                        onOverlayActionSelect(selectedIndex - 1)
                                         true
                                     } else {
                                         onItemFocusLost(item)
@@ -554,8 +558,8 @@ class VideoCardAdapter(
 
                             KeyEvent.KEYCODE_DPAD_RIGHT ->
                                 if (event.action == KeyEvent.ACTION_DOWN) {
-                                    if (overlayUi.selectedIndex < overlayUi.actions.lastIndex) {
-                                        onOverlayActionSelect(overlayUi.selectedIndex + 1)
+                                    if (selectedIndex < overlayUi.actions.lastIndex) {
+                                        onOverlayActionSelect(selectedIndex + 1)
                                         true
                                     } else {
                                         onItemFocusLost(item)

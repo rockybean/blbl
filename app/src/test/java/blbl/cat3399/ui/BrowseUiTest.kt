@@ -66,13 +66,14 @@ class BrowseUiTest {
         val themes = listOf(
             R.style.Theme_Blbl_Base_Dark, R.style.Theme_Blbl_Base_PinkLight,
             R.style.Theme_Blbl_Base_TvPinkIllustration, R.style.Theme_Blbl_Base_Modern,
+            R.style.Theme_Blbl_Base_Modern_Tv,
         )
         themes.forEach { theme ->
             val context = ContextThemeWrapper(RuntimeEnvironment.getApplication(), theme)
             val inflater = LayoutInflater.from(context)
             val main = inflater.inflate(R.layout.activity_main, null)
             val settings = main.findViewById<View>(R.id.btn_sidebar_settings)
-            val expectedSize = if (theme == R.style.Theme_Blbl_Base_Modern) {
+            val expectedSize = if (theme == R.style.Theme_Blbl_Base_Modern || theme == R.style.Theme_Blbl_Base_Modern_Tv) {
                 (48 * context.resources.displayMetrics.density).toInt()
             } else {
                 context.resources.getDimensionPixelSize(R.dimen.sidebar_main_settings_size)
@@ -82,6 +83,24 @@ class BrowseUiTest {
             assertNotNull(inflater.inflate(R.layout.item_video_card, null))
             assertNotNull(inflater.inflate(R.layout.item_live_card, null))
         }
+    }
+
+    @Test
+    fun tv_theme_has_readable_labels_and_larger_focus_outline_without_navigation_height_jumps() {
+        val adapter = SidebarNavAdapter { true }
+        adapter.submit(navItems, SidebarNavAdapter.ID_HOME)
+        val recycler = recycler(R.style.Theme_Blbl_Base_Modern_Tv, adapter)
+        val holder = recycler.findViewHolderForAdapterPosition(1) as SidebarNavAdapter.Vh
+        val root = holder.itemView
+        val density = recycler.resources.displayMetrics.density
+        assertEquals((76 * density).toInt(), root.layoutParams.height)
+        assertEquals(16f * recycler.resources.displayMetrics.scaledDensity, root.findViewById<TextView>(R.id.tv_label).textSize, 0.01f)
+        assertEquals((36 * density).toInt(), root.findViewById<View>(R.id.iv_icon).layoutParams.width)
+        assertEquals((3 * density).toInt(), (root as com.google.android.material.card.MaterialCardView).strokeWidth)
+        holder.bindAppearance(selected = true, showLabelsAlways = false)
+        assertEquals((76 * density).toInt(), root.layoutParams.height)
+        val card = LayoutInflater.from(recycler.context).inflate(R.layout.item_video_card, recycler, false)
+        assertEquals(20f * recycler.resources.displayMetrics.scaledDensity, card.findViewById<TextView>(R.id.tv_title).textSize, 0.01f)
     }
 
     @Test
@@ -147,7 +166,7 @@ class BrowseUiTest {
     }
 
     @Test
-    fun action_selection_advances_without_rebinding_title_and_collapse_restores_metadata() {
+    fun remote_repeats_before_rebind_advance_each_step_and_collapse_restores_metadata() {
         val card = VideoCard(
             bvid = "BVtest", cid = null, title = "测试视频", coverUrl = "", durationSec = 60,
             ownerName = "测试UP", ownerFace = null, view = 100, danmaku = 10,
@@ -164,7 +183,7 @@ class BrowseUiTest {
         }
         val adapter = VideoCardAdapter(onClick = { _, _ -> }, actionDelegate = delegate)
         adapter.submit(listOf(card))
-        val recycler = recycler(R.style.Theme_Blbl_Base_Modern, adapter)
+        val recycler = recycler(R.style.Theme_Blbl_Base_Modern_Tv, adapter)
         val holder = recycler.findViewHolderForAdapterPosition(0) as VideoCardAdapter.Vh
         val root = holder.itemView
         var lastPayload: Any? = null
@@ -177,10 +196,11 @@ class BrowseUiTest {
         var titleChanges = 0
         root.findViewById<TextView>(R.id.tv_title).addTextChangedListener { titleChanges++ }
         repeat(2) {
-            assertTrue(root.dispatchToDpadItemKeyHandler(KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT)))
+            assertTrue(root.dispatchToDpadItemKeyHandler(KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent(0, it.toLong(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT, it)))
             assertNotNull(lastPayload)
-            adapter.onBindViewHolder(holder, 0, mutableListOf(lastPayload!!))
         }
+        // Both key events precede the next RecyclerView frame, as with a held remote key.
+        adapter.onBindViewHolder(holder, 0, mutableListOf(lastPayload!!))
         assertEquals(0, titleChanges)
         assertTrue(root.findViewById<View>(R.id.btn_action_up).isSelected)
         assertFalse(root.findViewById<View>(R.id.btn_action_watch_later).isSelected)

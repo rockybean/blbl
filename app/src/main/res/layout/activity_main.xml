@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:id="@+id/sidebar"
-        android:layout_width="@dimen/sidebar_width"
+        android:layout_width="?attr/blblSidebarWidth"
         android:layout_height="0dp"
         android:background="?attr/blblSidebarBackground"
         android:clipChildren="false"
@@ -31,7 +31,7 @@
             android:src="@android:drawable/sym_def_app_icon"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay_Blbl_Circular"
             app:strokeColor="?attr/blblFocusStrokeColor"
-            app:strokeWidth="2dp" />
+            app:strokeWidth="?attr/blblFocusStrokeWidth" />
 
         <TextView
             android:id="@+id/btn_sidebar_login"
@@ -75,7 +75,7 @@
             app:cardCornerRadius="10dp"
             app:cardElevation="0dp"
             app:strokeColor="?attr/blblFocusStrokeFocusOnlyColor"
-            app:strokeWidth="2dp">
+            app:strokeWidth="?attr/blblFocusStrokeWidth">
 
             <ImageView
                 android:layout_width="match_parent"
